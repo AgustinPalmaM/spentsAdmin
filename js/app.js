@@ -61,6 +61,44 @@ class UI {
 
   }
 
+  addSpentsToHtml(spents) {
+    this.cleanHtml();
+
+    spents.forEach(spent => {
+      const { spentName, spentAmount, id } = spent;
+      // Create an LI tag to display the spent
+      const newSpent = document.createElement('LI');
+      newSpent.className = 'list-group-item d-flex justify-content-between align-items-center';
+      newSpent.dataset.id = id;
+      
+      // add items spentName, spentAmount to the html inside newSpent li
+      const div = document.createElement('DIV');
+      const divTwo = document.createElement('DIV');
+      divTwo.textContent = `${spentName}:`;
+      div.className = 'd-flex justify-content-between align-items-center w-100 m-1';
+    
+      const spanDetailSpent = document.createElement('SPAN');
+      spanDetailSpent.classList = 'badge badge-primary badge-pill';
+      spanDetailSpent.textContent = `${spentAmount}`;
+      div.appendChild(divTwo)
+      div.appendChild(spanDetailSpent)
+      
+      const deleteButton = document.createElement('BUTTON');
+      deleteButton.classList.add('btn', 'btn-danger', 'borrar-gasto');
+      deleteButton.textContent = 'borrar';
+      
+      newSpent.appendChild(div);
+      newSpent.appendChild(deleteButton);
+      spentList.appendChild(newSpent);
+    })
+  }
+
+  cleanHtml() {
+    while(spentList.firstElementChild) {
+      spentList.firstElementChild.remove();
+    }
+  }
+
 }
 
 // Instances
@@ -105,5 +143,9 @@ function addSpent(e) {
 
   ui.printAlert('Ok, spent added');
 
+  const { spents } = budget;
+  ui.addSpentsToHtml( spents );
+
   form.reset();
+  
 }
