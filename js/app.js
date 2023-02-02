@@ -22,6 +22,10 @@ class Budget {
     this.balance = Number(budget);
     this.spents = [];
   }
+
+  newSpent(spent) {
+    this.spents = [...this.spents, spent]
+  }
 }
 
 class UI {
@@ -62,9 +66,8 @@ class UI {
 // Instances
 
 const ui = new UI();
-let budget;
 
-
+console.log(budget)
 // Functions
 
 function askBudget() {
@@ -75,7 +78,7 @@ function askBudget() {
     alert('You must enter a number and greater than zero')
     window.location.reload();
   } 
-
+  
   budget = new Budget(askedBudget);
   ui.insertBudget(budget)
 }
@@ -86,8 +89,8 @@ function addSpent(e) {
 
   // read data from form
   const spentName = document.querySelector('#gasto').value;
-  const spentAmount = document.querySelector('#cantidad').value;
-
+  const spentAmount = Number(document.querySelector('#cantidad').value);
+  
   if (spentName === '' || spentAmount === '') {
     ui.printAlert('You should enter both fields', 'error')
     return;
@@ -95,7 +98,12 @@ function addSpent(e) {
     ui.printAlert(' Amount must be a number and greater than zero ', 'error' )
     return;
   }
+  
+  const spent = { spentName , spentAmount, id: Date.now() };
+  
+  budget.newSpent(spent);
 
-  console.log('adding spent')
+  ui.printAlert('Ok, spent added');
 
+  form.reset();
 }
