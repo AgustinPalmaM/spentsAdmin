@@ -24,7 +24,14 @@ class Budget {
   }
 
   newSpent(spent) {
-    this.spents = [...this.spents, spent]
+    this.spents = [...this.spents, spent];
+    this.calculateBalance();
+  }
+
+  calculateBalance() {
+    const spentAmountSum = this.spents.reduce( ( total, spent ) => total + spent.spentAmount, 0 );
+    this.balance = this.budget - spentAmountSum;
+    
   }
 }
 
@@ -33,17 +40,17 @@ class UI {
   insertBudget(amounts) {
     // make const with elements from budget object
     const { budget, balance } = amounts;
-
+    
     // insert html with budget and balance
     document.querySelector('#total').textContent = budget;
     document.querySelector('#restante').textContent = balance;
-
+    
   }
 
   printAlert( message, typeMessage ) {
     const divMessage = document.createElement('DIV');
     divMessage.classList.add('text-center', 'alert');
-
+    
     
     if (typeMessage === 'error') {
       divMessage.classList.add('alert-danger');
@@ -58,12 +65,12 @@ class UI {
     setTimeout(() => {
       divMessage.remove();
     }, 1000)
-
+    
   }
-
+  
   addSpentsToHtml(spents) {
     this.cleanHtml();
-
+    
     spents.forEach(spent => {
       const { spentName, spentAmount, id } = spent;
       // Create an LI tag to display the spent
@@ -76,7 +83,7 @@ class UI {
       const divTwo = document.createElement('DIV');
       divTwo.textContent = `${spentName}:`;
       div.className = 'd-flex justify-content-between align-items-center w-100 m-1';
-    
+      
       const spanDetailSpent = document.createElement('SPAN');
       spanDetailSpent.classList = 'badge badge-primary badge-pill';
       spanDetailSpent.textContent = `${spentAmount}`;
@@ -93,19 +100,24 @@ class UI {
     })
   }
 
+  updateBalance(balance) {
+  
+    document.querySelector('#restante').textContent = balance;
+    console.log(balance)
+  }
+
   cleanHtml() {
     while(spentList.firstElementChild) {
       spentList.firstElementChild.remove();
     }
   }
-
+  
 }
 
 // Instances
 
 const ui = new UI();
 
-console.log(budget)
 // Functions
 
 function askBudget() {
@@ -143,8 +155,10 @@ function addSpent(e) {
 
   ui.printAlert('Ok, spent added');
 
-  const { spents } = budget;
+  const { spents, balance } = budget;
   ui.addSpentsToHtml( spents );
+
+  ui.updateBalance( balance );
 
   form.reset();
   
