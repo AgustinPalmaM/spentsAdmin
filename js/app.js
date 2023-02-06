@@ -34,6 +34,11 @@ class Budget {
     );
     this.balance = this.budget - spentAmountSum;
   }
+
+  deleteSpent(id) {
+    this.spents = this.spents.filter((spent) => spent.id !== id);
+    this.calculateBalance();
+  }
 }
 
 class UI {
@@ -91,6 +96,9 @@ class UI {
 
       const deleteButton = document.createElement("BUTTON");
       deleteButton.classList.add("btn", "btn-danger", "borrar-gasto");
+      deleteButton.onclick = () => {
+        deleteSpent(id);
+      };
       deleteButton.textContent = "borrar";
 
       newSpent.appendChild(div);
@@ -112,25 +120,25 @@ class UI {
   checkBudget(budgetObject) {
     const { budget, balance } = budgetObject;
     const percentageBalance = balance / budget;
-    const divBalance = document.querySelector('.restante')
+    const divBalance = document.querySelector(".restante");
 
-
-    if ( percentageBalance <= 0.25 ) {
-      divBalance.classList.remove('alert-success', 'alert-warning');
-      divBalance.classList.add('alert-danger');
-    } else if ( percentageBalance <= 0.5 ) {
-      divBalance.classList.remove('alert-success');
-      divBalance.classList.add('alert-warning');
-      
+    if (percentageBalance <= 0.25) {
+      divBalance.classList.remove("alert-success", "alert-warning");
+      divBalance.classList.add("alert-danger");
+    } else if (percentageBalance <= 0.5) {
+      divBalance.classList.remove("alert-success", "alert-danger");
+      divBalance.classList.add("alert-warning");
+    } else {
+      divBalance.classList.remove("alert-danger", "alert-warning");
+      divBalance.classList.add('alert-success')
     }
 
     // Alert to the user when the balance is less than 0 and disable the button add more spents
 
-    if ( balance < 0 ) {
-      this.printAlert('Your budget has been exhausted', 'error');
+    if (balance < 0) {
+      this.printAlert("Your budget has been exhausted", "error");
       document.querySelector('button[type="submit"]').disabled = true;
     }
-      
   }
 }
 
@@ -179,11 +187,20 @@ function addSpent(e) {
   ui.printAlert("Ok, spent added");
 
   const { spents, balance } = budget;
+
   ui.addSpentsToHtml(spents);
 
   ui.updateBalance(balance);
 
   ui.checkBudget(budget);
-
+  
   form.reset();
+}
+
+function deleteSpent(id) {
+  budget.deleteSpent(id);
+  const { spents, balance } = budget;
+  ui.addSpentsToHtml( spents );
+  ui.updateBalance( balance );
+  ui.checkBudget( budget );
 }
