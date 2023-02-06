@@ -203,4 +203,6 @@ function deleteSpent(id) {
   ui.addSpentsToHtml( spents );
   ui.updateBalance( balance );
   ui.checkBudget( budget );
+  document.querySelector('button[type="submit"]').disabled = false;
+
 }
